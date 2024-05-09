@@ -1,0 +1,3 @@
+usuario, arquivo, leitura, escrita, execucao
+usu1, arquivo.txt, 1,0,0
+admin, arquivo.txt, 1,1,1
