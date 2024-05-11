@@ -1,5 +1,5 @@
 from autenticacao import menu_inicial
-from autenticacao import lista_arquivos
+from autenticacao import comandos_disponiveis
 if __name__ == '__main__':
     usuario = menu_inicial()
-    lista_arquivos(usuario)
+    comandos_disponiveis(usuario)
