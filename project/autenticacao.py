@@ -105,7 +105,7 @@ def comandos_disponiveis(usuario):
         # 1- Listar arquivos
 
         if op == "1":
-            lista_arquivo()
+            lista_arquivos()
 
 
         # 2- Criar arquivo
@@ -139,4 +139,15 @@ def comandos_disponiveis(usuario):
             break
 
         else:
-            print("Opção não existe! :c")    
+            print("Opção não existe! :c")
+
+def lista_arquivos(usuario):
+    with open("project/permissoes.txt", "r") as arquivos:
+
+        for linha in arquivos:
+            perm_usuario, arquivo, r, w, x = linha.strip().split(", ")
+            if perm_usuario == usuario and r == '1':
+                print("-", arquivo)
+
+            
+            
