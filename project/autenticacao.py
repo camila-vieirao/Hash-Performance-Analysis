@@ -1,3 +1,6 @@
+from hashlib import sha256
+from controleacesso import cria_arquivo, le_arquivo, lista_arquivos, exclui_arquivo, executa_arquivo
+
 def menu_inicial():
 
     while True:
@@ -7,7 +10,7 @@ def menu_inicial():
         print("  2. Autenticar")
         print("  3. Sair")
 
-        op = input("\nOpção:")
+        op = input("\nOpção: ")
         
         #cadastrar
         if op == "1":
@@ -19,11 +22,11 @@ def menu_inicial():
                 if cadastra(usuario, senha):
                     print("\nNovo usuário cadastrado!\n")
                 else:
-                    print("Usuário já existe! :(\n")
+                    print("\nUsuário já existe! :(\n")
 
         #autenticar
         elif op == "2":
-            usuario = input("Usuário: ")
+            usuario = input("\nUsuário: ")
             senha = input("Senha: ")
 
             auth = autentica(usuario, senha)
@@ -33,9 +36,9 @@ def menu_inicial():
                 print("Olá, " + usuario)
                 return usuario
             elif auth == None:
-                print("Usuário não existe! :c")
+                print("\nUsuário não existe! :c")
             else:
-                print("Falha na autenticação! :c")
+                print("\nFalha na autenticação! :c")
             
         #sair
         elif op == "3":
@@ -43,7 +46,7 @@ def menu_inicial():
             break
 
         else: 
-            print("Opção não existe! :c")
+            print("\nOpção não existe! :c")
 
 def cadastra(usuario, senha):
 
@@ -105,7 +108,7 @@ def comandos_disponiveis(usuario):
         # 1- Listar arquivos
 
         if op == "1":
-            print("Arquivos no diretório: ")
+            print("\nArquivos no diretório: ")
             lista_arquivos(usuario)
 
 
@@ -113,7 +116,7 @@ def comandos_disponiveis(usuario):
 
         elif op == "2":
             
-            novo_arquivo = input("Digite o nome do arquivo que deseja criar: ")
+            novo_arquivo = input("\nDigite o nome do arquivo que deseja criar: ")
             adicionar = cria_arquivo(usuario, novo_arquivo)
             if adicionar:
                 print("Arquivo criado com sucesso!")
@@ -121,57 +124,44 @@ def comandos_disponiveis(usuario):
         # 3- Ler arquivo
 
         elif op == "3":
-            nome_arquivo = input("Digite o nome do arquivo que deseja ler: ")
+            nome_arquivo = input("\nDigite o nome do arquivo que deseja ler: ")
             ler = le_arquivo(usuario, nome_arquivo)
             if ler:
-                print("Arquivo ",  nome_arquivo, "lido!")
+                print("\nArquivo ",  nome_arquivo, "lido!")
             elif ler == None:
-                print("Arquivo não existe! :c")
+                print("\nArquivo não existe! :c")
             elif ler == False:
-                print("Não é possível ler o arquivo! :c")
+                print("\nNão é possível ler o arquivo! :c")
 
         # 4- Excluir arquivo
 
-        #elif op == "4":
-        #    exclui_arquivo()
+        elif op == "4":
+            excluido = exclui_arquivo(usuario, nome_arquivo)
+            if excluido:
+                print("\nArquivo ",  nome_arquivo, "excluído!")
+            elif ler == None:
+                print("\nArquivo não existe! :c")
+            elif ler == False:
+                print("\nNão é possível excluir o arquivo! :c")
 
 
         # 5- Executar arquivo
 
-        #elif op == "5":
-        #    executa_arquivo()
+        elif op == "5":
+            exec = executa_arquivo(usuario, nome_arquivo)
+            if exec:
+                print("\nArquivo ",  nome_arquivo, "executado!")
+            elif exec == None:
+                print("\nArquivo não existe! :c")
+            elif exec == False:
+                print("\nNão é possível executar o arquivo! :c")
 
 
         # 6- Sair
 
-        #elif op == "6":
-        #    print("Tchau! :]")
-        #    break
+        elif op == "6":
+            print("Tchau! :]")
+            break
 
         else:
             print("Opção não existe! :c")
-
-def lista_arquivos(usuario):
-    with open("project/permissoes.txt", "r") as arquivos:
-
-        for linha in arquivos:
-            perm_usuario, arquivo, r, w, x = linha.strip().split(", ")
-            if perm_usuario == usuario and r == '1':
-                print("-", arquivo)
-
-def cria_arquivo(usuario, novo_arquivo):
-    with open("project/permissoes.txt", "a") as arquivos:
-        arquivos.write(f"{usuario}, {novo_arquivo}, 1, 1, 1\n")
-    return True
-
-def le_arquivo(usuario, nome_arquivo):
-    with open("project/permissoes.txt", "r") as arquivos:
-
-        for linha in arquivos:
-            perm_usuario, arquivo, r, w, x = linha.strip().split(", ")
-            if nome_arquivo not in arquivos:
-                return None
-            elif perm_usuario == usuario and arquivo == nome_arquivo and r == "1":
-                return True
-            else:
-                return False

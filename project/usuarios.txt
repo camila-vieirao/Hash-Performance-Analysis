@@ -1,2 +1,1 @@
-cami, 1234
 usu1, sen1
