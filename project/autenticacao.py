@@ -46,7 +46,7 @@ def menu_inicial():
         #sair
         elif op == "3":
             print("Tchau! :]")
-            break
+            exit(0)
 
         else: 
             print("\nOpção não existe! :c")
