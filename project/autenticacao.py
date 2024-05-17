@@ -1,6 +1,4 @@
 from hashlib import sha256
-import random
-import string
 from controleacesso import cria_arquivo, le_arquivo, lista_arquivos, exclui_arquivo, executa_arquivo
 
 def menu_inicial():
@@ -21,8 +19,8 @@ def menu_inicial():
             if len(senha) > 4 or len(usuario) > 4:
                 print("\nAtenção: as credenciais devem ter no máximo 4 caracteres!\n")
             else:
-                senha_salted, sal = salt(senha)
-                if cadastra(usuario, senha_salted, sal):
+                senha_hash = sha256(senha.encode()).hexdigest() #calculando o hash para implementar no cadastra()
+                if cadastra(usuario, senha_hash):
                     print("\nNovo usuário cadastrado!\n")
                 else:
                     print("\nUsuário já existe! :(\n")
@@ -32,7 +30,9 @@ def menu_inicial():
             usuario = input("\nUsuário: ")
             senha = input("Senha: ")
 
-            auth = autentica(usuario, senha)
+            senha_hash = sha256(senha.encode()).hexdigest()
+
+            auth = autentica(usuario, senha_hash)
 
             if auth:
                 print("\nUsuário autenticado!")
@@ -51,26 +51,24 @@ def menu_inicial():
         else: 
             print("\nOpção não existe! :c")
 
-def cadastra(usuario, senha, salts):
+def cadastra(usuario, senha):
 
     with open("project/usuarios.txt", "r") as usuarios:
 
-        usu = []
-        sen = []
-        sal = []
+        d = []
+        f = []
         for i in usuarios:
-            a,b,c = i.split(", ")
-            c = c.strip()
-            usu.append(a)
-            sen.append(b)
-            sal.append(c)
+            a,b = i.split(", ")
+            b = b.strip()
+            d.append(a)
+            f.append(b)
 
 
-    if usuario in usu:
+    if usuario in d:
         return False
     else: 
         with open("project/usuarios.txt", "a") as usuarios:        
-            usuarios.write(usuario + ", " + senha + ", " + salts + "\n")
+            usuarios.write(usuario + ", " + senha + "\n")
     return True
         
 def autentica(usuario, senha):
@@ -78,30 +76,21 @@ def autentica(usuario, senha):
     with open("project/usuarios.txt", "r") as usuarios:
 
         if not len(usuario or senha)<1:
-            usu = []
-            sen = []
-            sal = []
+            d = []
+            f = []
             for i in usuarios:
-                a,b,c = i.split(", ")
-                c = c.strip()
-                usu.append(a)
-                sen.append(b)
-                sal.append(c)
+                a,b = i.split(", ")
+                b = b.strip()
+                d.append(a)
+                f.append(b)
 
 
-        if usuario not in usu:
+        if usuario not in d:
             return None
         
-        i = usu.index(usuario)
+        i = d.index(usuario)
 
-        senha_salt = senha + sal[i]
-        senha_hash = sha256(senha_salt.encode()).hexdigest()
-        if sen[i] != senha_hash:
+        if f[i] != senha:
             return False
         
         return True
-    
-def salt(senha):
-    salt = ''.join(random.choices(string.ascii_letters + string.digits, k=4))
-    salted = senha + salt
-    return sha256(salted.encode()).hexdigest(), salt
